@@ -1,3 +1,7 @@
+
+	}
+
+}
 package exercises_tu8_2_16_extra;
 
 import java.util.Scanner;
@@ -17,19 +21,20 @@ public class Main {
 	
 			do {
 				
-				hangman.playATurn(lowest, guessed);
+				guessed=hangman.playATurn(lowest, guessed);
+				
 				
 			}while(guessed==false);
 			
 			System.out.println();
 			
 			if(guessed==true) {
-				System.out.println("CONGRATULATIONS, YOU HAVE GUESSED THE WORD!!!");
-				System.out.println("The word was :" + hangman.getWord());
+				System.out.println("CONGRATULATIONS PLAYER_" + hangman.getWinner() +" , YOU HAVE GUESSED THE WORD!!!");
+				System.out.println("The word was: " + hangman.getWord());
 			}
 			else {
 				System.out.println("GAME OVER");
-				System.out.println("The word was :" + hangman.getWord());
+				System.out.println("The word was: " + hangman.getWord());
 			}
 		
 		input.close();
