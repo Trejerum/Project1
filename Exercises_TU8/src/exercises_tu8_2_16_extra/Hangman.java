@@ -13,6 +13,7 @@ public class Hangman {
 	private String[] words = { "ADDRESS", "JAVA", "HTML", "INTERNET", "EMAIL", "PASSWORD", "MOUSE" };
 	private Scanner input = new Scanner(System.in);
 	private int winner;
+	private boolean lose = false;
 
 	// Constructors
 	public Hangman(int playerNum) {
@@ -22,7 +23,7 @@ public class Hangman {
 
 		players = new Player[playerNum];
 		for (int i = 0; i < players.length; i++) {
-			players[i]=new Player();
+			players[i] = new Player();
 		}
 
 		Random randGenerator = new Random();
@@ -38,9 +39,13 @@ public class Hangman {
 	public String getWord() {
 		return wordToGuess;
 	}
-	
+
 	public int getWinner() {
 		return winner;
+	}
+	
+	public boolean getLose() {
+		return lose;
 	}
 
 	// Other methods
@@ -54,39 +59,42 @@ public class Hangman {
 	public boolean playATurn(int lowest, boolean guessed) {
 		char letter;
 		boolean isInWord;
-		boolean isRepeated;
+		boolean isRepeated = false;
 		for (int i = 0; i < players.length; i++) {
 
-			if(players[i].getLives()>0) {
-				System.out.println("Player_" + i + " its your turn");
-				System.out.println("Guess the word: ");
-				displayGaps();
-				System.out.print("Enter a letter: ");
-				letter = input.nextLine().charAt(0);
-				letter = Character.toUpperCase(letter);
-				isInWord = isLetterInWordToGuess(letter);
-				if (isInWord == true) {
-					isRepeated = isLetterRepeated(letter);
-					if (isRepeated == false) {
-						System.out.println("You have guessed the letter");
-						fillGapsWithLetter(letter);
+			if (players[i].getLives() > 0) {
+				do {
+					System.out.println("Player_" + i + " its your turn");
+					System.out.println("Guess the word: ");
+					displayGaps();
+					System.out.print("Enter a letter: ");
+					letter = input.nextLine().charAt(0);
+					letter = Character.toUpperCase(letter);
+					isInWord = isLetterInWordToGuess(letter);
+					if (isInWord == true) {
+						isRepeated = isLetterRepeated(letter);
+						if (isRepeated == false) {
+							System.out.println("You have guessed the letter. You can try again");
+							fillGapsWithLetter(letter);
+						} else {
+							System.out.println("Uppsss. You have already guessed this letter");
+						}
 					} else {
-						System.out.println("Uppsss. You have already guessed this letter");
+						System.out.println("Uppsss. The letter '" + letter + "' is not in the word");
+						players[i].decreaseLives();
 					}
-				} else {
-					System.out.println("Uppsss. The letter '" + letter + "' is not in the word");
-					players[i].decreaseLives();
-				}
-				System.out.println("You have " + players[i].getLives() + " lives");
-				guessed = isGuessed();
-				if(guessed==true) {
-					winner=i;
-					break;
-				}
+					System.out.println("You have " + players[i].getLives() + " lives");
+					guessed = isGuessed();
+					if (guessed == true) {
+						winner = i;
+						break;
+					}
+					checkIfPlayersHaveLives();
+				} while (isRepeated == false && isInWord == true);
 			}
-			
+
 			System.out.println();
-		}	
+		}
 		return guessed;
 	}
 
@@ -140,6 +148,18 @@ public class Hangman {
 		}
 
 		return isInWord;
+	}
+	
+	public void checkIfPlayersHaveLives() {
+		int counter=0;
+		for (int i = 0; i < players.length; i++) {
+			if(players[i].getLives()==0) {
+				counter++;
+			}
+		}
+		if(counter==players.length) {
+			lose=true;
+		}
 	}
 
 }
