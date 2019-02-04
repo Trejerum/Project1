@@ -1,3 +1,4 @@
+
 package exercises_tu8_2_16_extra;
 
 import java.util.Random;
@@ -6,11 +7,12 @@ import java.util.Scanner;
 public class Hangman {
 
 	// Attributes
-	public Player[] player;
+	public Player[] players;
 	private String wordToGuess;
 	private char[] wordWithGaps;
 	private String[] words = { "ADDRESS", "JAVA", "HTML", "INTERNET", "EMAIL", "PASSWORD", "MOUSE" };
 	private Scanner input = new Scanner(System.in);
+	private int winner;
 
 	// Constructors
 	public Hangman(int playerNum) {
@@ -18,7 +20,10 @@ public class Hangman {
 		int lowLimit = 0;
 		int upLimit = words.length;
 
-		player = new Player[playerNum];
+		players = new Player[playerNum];
+		for (int i = 0; i < players.length; i++) {
+			players[i]=new Player();
+		}
 
 		Random randGenerator = new Random();
 		int myNumber = lowLimit + randGenerator.nextInt(upLimit + 1 - lowLimit);
@@ -33,6 +38,10 @@ public class Hangman {
 	public String getWord() {
 		return wordToGuess;
 	}
+	
+	public int getWinner() {
+		return winner;
+	}
 
 	// Other methods
 	public void initializeGaps() {
@@ -42,14 +51,14 @@ public class Hangman {
 		}
 	}
 
-	public void playATurn(int lowest, boolean guessed) {
+	public boolean playATurn(int lowest, boolean guessed) {
 		char letter;
 		boolean isInWord;
 		boolean isRepeated;
-		for (int i = 0; i < player.length; i++) {
+		for (int i = 0; i < players.length; i++) {
 
-			if(player[i].getLives()>0) {
-				System.out.println("Player_" + i + 1 + " its your turn");
+			if(players[i].getLives()>0) {
+				System.out.println("Player_" + i + " its your turn");
 				System.out.println("Guess the word: ");
 				displayGaps();
 				System.out.print("Enter a letter: ");
@@ -66,13 +75,19 @@ public class Hangman {
 					}
 				} else {
 					System.out.println("Uppsss. The letter '" + letter + "' is not in the word");
-					player[i].decreaseLives();
+					players[i].decreaseLives();
 				}
-				System.out.println("You have " + player[i].getLives() + " lives");
+				System.out.println("You have " + players[i].getLives() + " lives");
 				guessed = isGuessed();
+				if(guessed==true) {
+					winner=i;
+					break;
+				}
 			}
+			
+			System.out.println();
 		}	
-
+		return guessed;
 	}
 
 	public void displayGaps() {
