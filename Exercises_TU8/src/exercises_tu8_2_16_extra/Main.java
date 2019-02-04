@@ -1,7 +1,4 @@
 
-	}
-
-}
 package exercises_tu8_2_16_extra;
 
 import java.util.Scanner;
@@ -24,7 +21,7 @@ public class Main {
 				guessed=hangman.playATurn(lowest, guessed);
 				
 				
-			}while(guessed==false);
+			}while(guessed==false&&hangman.getLose()==false);
 			
 			System.out.println();
 			
